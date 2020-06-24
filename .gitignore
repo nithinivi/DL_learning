@@ -1,6 +1,6 @@
 data/*
 models/*
-
+wheat_nb/models/*
 
 # Created by https://www.toptal.com/developers/gitignore/api/emacs,jupyternotebooks,visualstudiocode
 # Edit at https://www.toptal.com/developers/gitignore?templates=emacs,jupyternotebooks,visualstudiocode
