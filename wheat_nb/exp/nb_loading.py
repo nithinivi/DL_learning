@@ -7,12 +7,41 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
+
+import numpy as np
 from pathlib import Path
 from fastai2.vision.all import *
 
+from effdet import get_efficientdet_config, EfficientDet, DetBenchTrain
+from effdet.efficientdet import HeadNet
+
+from pdb import set_trace
 
 path = Path("../data")
 df_path = path/'train.csv'
+
+df = pd.read_csv(path/'train.csv')
+
+imgs = get_image_files(path/'train')
+
+im_df = df['image_id'].unique()
+im_df = [fn + '.jpg' for fn in im_df]
+
+fns = [Path(str(path/'train') + f'/{fn}') for fn in im_df]
+
+def get_tmp_bbox(fn):
+    "Grab bounding boxes from `DataFrame`"
+    rows = np.where((df_np[:, 0] == fn.name[:-4]))
+    bboxs = df_np[rows][:,3]
+    bboxs = [b.replace('[', '').replace(']', '') for b in bboxs]
+    return np.array([np.fromstring(b, sep=',') for b in bboxs])
+
+def get_tmp_lbl(fn):
+    "Grab label from `DataFrame`"
+    rows = np.where((df_np[:, 0] == fn.name[:-4]))
+    return df_np[rows][:,4]
+
+arr = np.load(f"{path}/data.npy", allow_pickle=True)
 
 def get_bbox(fn):
     "Gets bounding box from `fn`"
@@ -26,8 +55,8 @@ def get_lbl(fn):
 
 def get_items(noop): return fns
 
-from effdet import get_efficientdet_config, EfficientDet, DetBenchTrain
-from effdet.efficientdet import HeadNet
+pre_trained_weights = path.parent / "models/efficientdet_d0-d92fd44f.pth"
+
 
 def get_net():
     config = get_efficientdet_config('tf_efficientdet_d0')
